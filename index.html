@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mapa de viajes</title>
+<script src="js/leaflet.js"></script>
+<link rel="stylesheet" href="css/leaflet.css">
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+        }   
+    html, body, #map {
+        height: 100%;
+        width: 100%;
+        }
+    #title {
+        position: fixed;
+        margin-top: 0;
+        top: 10px;
+        left: 55px;
+        font-size: 2em;
+        font-family: "Lora", serif;
+        letter-spacing: .04em;
+        padding: 10px 15px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border: 1px solid grey;
+        border-radius: 3px;
+        z-index: 800;
+            }
+    
+    #description {
+        position: fixed;
+        bottom: 20px;
+        left: 10px;
+        width: 280px;
+        padding: 0px 15px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border: 1px solid grey;
+        border-radius: 3px;
+        z-index: 500;
+        }
+    #rutaholanda {background-color: purple;}
+    #rutarover {background-color: red;}
+    #rutainterrail {background-color:blue;}
+    #rutainvierno {background-color:pink;}
+    #rutatrashu {background-color: green;}
+
+</style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    let map = L.map("map", {center: [40.00, 11.00], zoom: 4,
+        });
+    var fondo= L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+	      attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+        }
+        ).addTo(map)
+    var imagen = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        }
+        ).addTo(map)
+
+    var grenoble= L.marker([45.19371947793937, 5.713995207105705]).bindPopup("Grenoble (Francia)");
+        zaragoza = L.marker([41.660328078766696, -0.893616417410658]).bindPopup("Zaragoza (Aragón)");
+        burgos = L.marker([42.346277545456424, -3.690745381505322]).bindPopup("Burgos (Castilla y León)");
+    var home = L.layerGroup([zaragoza, grenoble, burgos])
+    
+    var palupohja = L.marker([58.421566578986614, 26.23684078703546]).bindPopup(
+            "<h2>To Bee or not to Bee, Palupohja (Estonia)</h2><p>6-9 Julio 2015</p><p>Youth exchange (Erasmus+) sobre la importancia de las abejas y la problemática de su extinción.</p><p> <a href='https://happybeeproject.wordpress.com/'>(Web del proyecto)</a></p><img src='images/estonia.jpg'</p> ");
+        cluj = L.marker([46.78300100173167, 23.662837614659743]).bindPopup(
+            "<h2>Food Challenge, Cluj-Napoca (Rumanía)</h2><p>28 Noviembre-5 Diciembre 2015</p><p>Training Course (Erasmus+) sobre el consumo responsable de alimentos.</p><p> <a href= 'https://responsibleconsumption.info/'>(Web de la asociación organizadora)</a> </p><img src='images/cluj.jpg'</p> ");
+        amiantos = L.marker([34.91609447452086, 32.93236182322216]).bindPopup(
+            "<h2>Nature me, Amiantos (Chipre)</h2><p>4-11 Octubre 2016</p><p>Youth exchange (Erasmus+) sobre la naturaleza y nuestra conexión con ella, buscando la toma de responsabilidad e iniciativa en la conservación del entorno natural.</p><img src='images/chipre.jpg'</p> ");
+        vinkovci = L.marker([45.30374067741823, 18.80537244811564]).bindPopup(
+            "<h2>Visual heArts, Vinkovci (Croacia)</h2><p>14-22 Marzo 2016</p><p>Youth exchange (Erasmus+) sobre la expresión de las emociones a través del arte.</p><img src='images/vinkovci.jpg'</p> ");
+        atenas = L.marker([37.97676071569639, 23.72597915143695]).bindPopup(
+            "<h2>Coed that works, Atenas (Grecia)</h2><p>10-13 Noviembre 2016</p><p>Proyecto de formación para tratar la temática de la coeducación en WAGGGS (World Association of Girl Guides and Girl Scouts).</p><p><a href= 'https://www.wagggs.org/es/'>(Web de la organización)</a></p> ");
+        kedougou = L.marker([12.561795387428512, -12.199697853216353]).bindPopup(
+            "<h2>Proyecto para el codesarrollo, gobernanza y empoderamiento mediante SIG y Cartografía para las comunidades locales de Kédougou, Senegal.</h2><p>1-11 Diciembre 2018 (Universidad de Zaragoza)</p>");
+    var training = L.layerGroup([cluj])
+    var exchange = L.layerGroup([palupohja, amiantos, vinkovci])
+    var guias = L.layerGroup([atenas])
+    var senegal = L.layerGroup([kedougou])
+    var proyectos = L.layerGroup([training, exchange, guias,senegal])
+        
+    var amsterdam = L.marker([52.37835774624229, 4.900909271344614]).bindPopup("Amsterdam (Países Bajos)");
+        delft = L.marker([52.021033202514246, 4.376619452138634]).bindPopup("Delft (Países Bajos)");
+        antwerpen = L.marker([51.213604798767456, 4.399617933847658]).bindPopup("Antwerpen (Bélgica)");
+        groningen = L.marker([53.220040054447686, 6.5619150042110155]).bindPopup("Groningen (Países Bajos)");
+    var rutaholanda= L.polyline([[45.19371947793937, 5.713995207105705],[52.37835774624229, 4.900909271344614],[52.021033202514246, 4.376619452138634],[51.213604798767456, 4.399617933847658],[53.220040054447686, 6.5619150042110155],[45.19371947793937, 5.713995207105705]],
+      {color: "purple", weight: 4}).bindPopup(
+        "<b>Viaje del invierno de 2018 </b>, desde Grenoble, visitando amigos en Holanda y Bélgica. Horas y más horas de tren y bus, canales, bicicletas y buena gente.");
+    var holanda = L.layerGroup([grenoble,amsterdam, delft, antwerpen, groningen,rutaholanda])
+
+    var konstanz = L.marker([47.70998265870681, 9.219908357111157]).bindPopup("Konstanz (Alemania)");
+        pfahlhof = L.marker([48.50403899638185, 9.42448997229608]).bindPopup("Pfahlhof (Alemania)");
+        malykrivan = L.marker([49.20566996835508, 19.000044127829636]).bindPopup("Maly Krivan (Eslovaquia)");
+        bratislava = L.marker([48.1549379525235, 17.099429798305206]).bindPopup("Bratislava (Eslovaquia)");
+        berlin = L.marker([52.529911753966104, 13.380758784513867]).bindPopup("Berlin (Alemania)");
+        rugen = L.marker([54.35876053321308, 13.36290722345765]).bindPopup("Isla de Rügen (Alemania)");
+        malmo = L.marker([55.611219228692576, 13.002919628006172]).bindPopup("Malmo (Suecia)");
+        copenhaguen = L.marker([55.678991191611345, 12.570132989197013]).bindPopup("Copenhaguen (Dinamarca)");
+        sylt = L.marker([54.93169474994716, 8.313108376599436]).bindPopup("Isla de Sylt (Alemania)");
+        gottingen = L.marker([51.54289561514001, 9.915177961022213]).bindPopup("Gottingen (Alemania)");
+        dahn = L.marker([49.145223932686406, 7.7807735393355655]).bindPopup("Dahn (Alemania)");
+        ecrins = L.marker([44.95660219296715, 6.080518065602089]).bindPopup("Parque Nacional Les Ecrins (Francia)");
+        toulouse = L.marker([43.596949127207026, 1.4300922948789863]).bindPopup("Toulouse (Francia)");
+        onati = L.marker([43.03605516869117, -2.4157446808604557]).bindPopup("Oñati (País Vasco)");
+    var rutainterrail = L.polyline([[41.660328078766696, -0.893616417410658],[45.19371947793937, 5.713995207105705],[47.70998265870681, 9.219908357111157],[48.50403899638185, 9.42448997229608],[49.20566996835508, 19.000044127829636],[48.1549379525235, 17.099429798305206],[52.529911753966104, 13.380758784513867],[54.35876053321308, 13.36290722345765],[55.611219228692576, 13.002919628006172],[55.678991191611345, 12.570132989197013],[54.93169474994716, 8.313108376599436],[51.54289561514001, 9.915177961022213],[49.145223932686406, 7.7807735393355655],[44.95660219296715, 6.080518065602089],[43.596949127207026, 1.4300922948789863],[43.03605516869117, -2.4157446808604557],[41.660328078766696, -0.893616417410658]],
+        {color: "blue", weight: 4}).bindPopup(
+        "Volví a Zaragoza después de un año viviendo fuera, me saturé a los 15 días y me fui a seguir recorriendo Europa, ¡toca <b> interrail</b> ! Un mes mapa en mano, de un lado para otro en tren y autostop, reencuentros con buenos amigos y búsqueda de grullas.");
+    var interrail = L.layerGroup([zaragoza,grenoble, konstanz, pfahlhof, malykrivan, bratislava, berlin, rugen, malmo, copenhaguen, sylt, gottingen, dahn, ecrins, toulouse, onati, rutainterrail])
+
+    var zewolde = L.marker([52.28453900326395, 5.52392006322763]).bindPopup("Zewolde (Países Bajos)");
+        paris = L.marker([48.878711028782426, 2.330578484550163]).bindPopup("París (Francia)");
+    var rutarover = L.polyline([[41.660328078766696, -0.893616417410658],[43.596949127207026, 1.4300922948789863],[52.28453900326395, 5.52392006322763],[52.37835774624229, 4.900909271344614],[48.878711028782426, 2.330578484550163],[41.660328078766696, -0.893616417410658]],
+        {color: "red", weight: 4}).bindPopup(
+        "¡De <b> roverway </b> a Holanda! Acompañando como monitora a las cuatro Guías Mayores del Grupo 9 Gaviota de Guías de Aragón, viajamos en tren hasta Holanda para participar en el campamento internacional de guías y scouts.");
+    var roverway = L.layerGroup([zaragoza,toulouse,zewolde,amsterdam,paris,rutarover])
+
+    var lisboa = L.marker([38.71682307663123, -9.13273972172108]).bindPopup("Lisboa (Portugal)");
+        cadiz = L.marker([36.532245282371896, -6.298603910409319]).bindPopup("Cádiz (Andalucía)");
+        sevilla = L.marker([37.38953593248305, -5.996259315905466]).bindPopup("Sevilla (Andalucía)");
+        pau = L.marker([43.32427288562074, -0.36254028563292995]).bindPopup("Pau (Francia)");
+    var rutainvierno = L.polyline([[41.660328078766696, -0.893616417410658],[38.71682307663123, -9.13273972172108],[36.532245282371896, -6.298603910409319],[37.38953593248305, -5.996259315905466],[38.71682307663123, -9.13273972172108],[42.346277545456424, -3.690745381505322],[43.32427288562074, -0.36254028563292995],[45.19371947793937, 5.713995207105705],[41.660328078766696, -0.893616417410658]],
+        {color: "pink", weight: 4}).bindPopup(
+        "¡Ya soy geógrafa y me he sacado el carnet de conducir! ¿Y ahora qué? Pues a seguir viajando. <b>Viaje del invierno de 2020</b>, dos meses totalmente improvisados de bus y autostop, de norte a sur y más al norte y vuelta para el sur.");
+    var invierno = L.layerGroup([zaragoza, lisboa, cadiz, sevilla, burgos, pau, grenoble,rutainvierno])
+
+    var madrid =L.marker([40.40729761298223, -3.700172183458408]).bindPopup("Madrid");
+        valverde =L.marker([42.94723636378293, -4.821492513487462]).bindPopup("Valverde de la Sierra (Castilla y León)");
+    var rutatrashu= L.polyline([[40.40729761298223, -3.700172183458408],[42.94723636378293, -4.821492513487462]],
+        {color: "green", weight: 4}).bindPopup(
+        "Verano de 2020, a trabajar de pastora! Con el <b>rebaño trashumante del Concejo de la Mesta </b>, recorremos la Cañada Real Leonesa Occidental desde Madrid hasta los puertos de Valverde de la Sierra (León), donde pasamos el verano dando de comer a las 1200 ovejas y cabras... y media vuelta hasta Madrid!");
+    var trashumancia = L.layerGroup([madrid,valverde,rutatrashu])
+
+    var baseMaps ={
+      "fondo": fondo,
+      "imagen": imagen,
+    };
+
+    var overlayMaps = {
+      "Proyectos": proyectos,
+      "Viaje del invierno de 2018" : holanda,
+      "Roverway 2018" : roverway,
+      "Interrail 2018": interrail,
+      "Viaje del invierno de 2020": invierno,
+      "Trashumancia 2020": trashumancia,
+      "Home": home,
+    };
+    L.control.layers(baseMaps,overlayMaps).addTo(map);
+
+  </script>  
+  
+  <h1 id="title">Mapa de viajes</h1>
+
+  <div id="description">
+    <p>¡Hola! Soy Espe, geógrafa, pastora... y viajera! 
+        Con el icono de la esquina superior derecha puedes seleccionar los viajes que quieras que aparezcan en el mapa: </p>
+    <p>
+        <ul>
+        <li>Proyectos de formación</li>
+        <li>Rutas por Europa</li>
+        <li>Trashumancia...</li>
+        </ul>
+    <p>Cada ruta se representa con una línea de color, uniendo las distintas paradas del viaje:</p>
+    <p id="rutaholanda">Viaje del invierno de 2018</p>
+    <p id="rutarover">Roverway 2018</p>
+    <p id="rutainterrail">Interrail 2018</p>
+    <p id="rutainvierno">Viaje del invierno de 2020</p>
+    <p id="rutatrashu">Trashumancia 2020</p>
+    <p>Seleccionando cada línea podrás ver una información general sobre la ruta, y en los puntos el nombre de la parada. Y por último, en los puntos de los proyectos puedes acceder a una descripción del mismo, una imagen y el enlace a la web del proyecto.</p>
+    
+</div>  
+
+</body>
+
+</html>
